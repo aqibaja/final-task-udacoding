@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "177419590054",
+    "project_id": "final-dicoding",
+    "storage_bucket": "final-dicoding.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:177419590054:android:0496a619b776fc81e15767",
+        "android_client_info": {
+          "package_name": "com.aqibaja.flutter_ecommerce_app_final_dicoding"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "177419590054-5mqj56t0u0f77e05ku3o0q1aq29ad2te.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq3herRWFUsYUQCuL9J0xix47tZEpsO7A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "177419590054-5mqj56t0u0f77e05ku3o0q1aq29ad2te.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

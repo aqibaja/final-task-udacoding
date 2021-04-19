@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,7 +13,11 @@ import 'package:flutter_ecommerce_app/components/AppSignIn.dart';
 import 'package:flutter_ecommerce_app/function/splitImage.dart';
 import 'package:flutter_ecommerce_app/models/listFavorite.dart';
 import 'package:flutter_ecommerce_app/screens/ProductDetailScreen.dart';
+import 'package:flutter_ecommerce_app/utils/Constants.dart';
 import 'package:flutter_ecommerce_app/utils/Urls.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:http/http.dart' as http;
 
 class WishListScreen extends StatefulWidget {
   @override
@@ -33,6 +41,51 @@ WishBloc _wishBloc;
 FavoriteBloc _favoriteBloc;
 
 class _EmptyWishListScreenState extends State<EmptyWishListScreen> {
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  getNotifikasi() {
+    _firebaseMessaging.subscribeToTopic("topicsWish");
+    _firebaseMessaging.configure(
+        // ketika didalam aplikasi
+        onMessage: (Map<String, dynamic> message) async {
+          showTopSnackBar(
+            context,
+            CustomSnackBar.error(
+              message: "${message['notification']['body']}",
+            ),
+          );
+        },
+        //ketika app tertutup
+        onLaunch: (Map<String, dynamic> message) async {},
+        //ketika app berjalan di background
+        onResume: (Map<String, dynamic> message) async {});
+  }
+
+  void sendNotifikasiDelete() async {
+    final body = jsonEncode({
+      "to": "/topics/topicsWish",
+      "topic": "topicsWish",
+      "notification": {
+        "title": "FCM Message",
+        "body": "Success Delete Favorite",
+        "sound": "default"
+      }
+    });
+    await http.post(BaseUrl,
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.authorizationHeader: keyMassaging
+        },
+        body: body);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getNotifikasi();
+  }
+
   @override
   Widget build(BuildContext context) {
     _authBloc = BlocProvider.of<AuthBloc>(context);
@@ -144,6 +197,7 @@ class _EmptyWishListScreenState extends State<EmptyWishListScreen> {
                                             }
                                             if (state
                                                 is FavoriteDeleteSuccess) {
+                                              sendNotifikasiDelete();
                                               EasyLoading.dismiss();
                                               _wishBloc.add(ListFavoriteEvent(
                                                   konsumenId: konsumenId));

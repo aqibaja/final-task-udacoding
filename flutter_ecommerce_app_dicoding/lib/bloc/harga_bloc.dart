@@ -12,6 +12,14 @@ class HargaBloc extends Bloc<HargaEvent, HargaState> {
   @override
   Stream<HargaState> mapEventToState(HargaEvent event) async* {
     int total;
+    if (event is HargaAddEvent) {
+      if (state is HargaInitial) {
+        yield PriceValue(totalHarga: 0);
+      } else {
+        yield PriceValue(
+            totalHarga: (state as PriceValue).totalHarga + event.harga);
+      }
+    }
     if (event is AddPriceEvent) {
       total = event.harga ?? 0;
       yield AddSuccess(totalHarga: total);

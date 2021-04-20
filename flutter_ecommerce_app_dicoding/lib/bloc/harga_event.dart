@@ -17,4 +17,9 @@ class RemovePriceEvent extends HargaEvent {
   RemovePriceEvent({this.harga});
 }
 
+class HargaAddEvent extends HargaEvent {
+  final int harga;
+  HargaAddEvent({this.harga});
+}
+
 class ClearEventPrice extends HargaEvent {}

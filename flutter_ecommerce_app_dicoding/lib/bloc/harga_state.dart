@@ -20,3 +20,11 @@ class RemoveSuccess extends HargaState {
   final int totalHarga;
   RemoveSuccess({this.totalHarga});
 }
+
+class PriceValue extends HargaState {
+  final int totalHarga;
+  PriceValue({this.totalHarga});
+
+  @override
+  List<Object> get props => [totalHarga];
+}

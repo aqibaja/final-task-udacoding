@@ -25,6 +25,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'bloc/kecamatan_bloc.dart';
 import 'bloc/wish_bloc.dart';
+import 'components/AppSignIn.dart';
 
 void main() => runApp(MyApp());
 
@@ -92,6 +93,8 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageNewState createState() => _MyHomePageNewState();
 }
 
+AuthBloc _authBloc;
+
 class _MyHomePageNewState extends State<MyHomePage> {
   final List<Widget> viewContainer = [
     HomeScreen(),
@@ -110,19 +113,47 @@ class _MyHomePageNewState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    _authBloc = BlocProvider.of<AuthBloc>(context);
     return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-          resizeToAvoidBottomInset:
-              false, //agar ketika keyboard naik tidak ada yg terangkat
-          appBar: appBarWidget(context),
-          drawer: DrawerWidget(),
-          body: IndexedStack(
-            index: currentIndex,
-            children: viewContainer,
-          ),
-          bottomNavigationBar: buildBottomNavigationBar()),
-    );
+        length: 2,
+        child: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+          print("auth = " + state.toString());
+          if (state is AuthInitial) {
+            EasyLoading.show(status: 'loading...');
+
+            _authBloc.add(CheckLoginEvent());
+          }
+          if (state is SignInOut) {
+            print("belum login");
+            EasyLoading.dismiss();
+            return Center(
+              child: ElevatedButton(
+                  onPressed: () => Navigator.push(
+                      context, MaterialPageRoute(builder: (_) => AppSignIn())),
+                  child: Text("LOGIN")),
+            );
+            /*  Future.delayed(Duration(milliseconds: 700), () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (_) => AppSignIn()));
+          }); */
+          }
+          if (state is SignInSaved) {
+            String konsumenId = state.idUSerSave;
+            print("konsumenID = " + konsumenId);
+            print("id konsumen di cart tersimpan!!!");
+            EasyLoading.dismiss();
+          }
+          return Scaffold(
+              resizeToAvoidBottomInset:
+                  false, //agar ketika keyboard naik tidak ada yg terangkat
+              appBar: appBarWidget(context),
+              drawer: DrawerWidget(),
+              body: IndexedStack(
+                index: currentIndex,
+                children: viewContainer,
+              ),
+              bottomNavigationBar: buildBottomNavigationBar());
+        }));
   }
 
   //bar dibawah

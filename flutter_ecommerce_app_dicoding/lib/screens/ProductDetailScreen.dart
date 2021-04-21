@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -15,11 +16,12 @@ import 'package:flutter_ecommerce_app/common_widget/LoadingProgress.dart';
 import 'package:flutter_ecommerce_app/components/AppSignIn.dart';
 import 'package:flutter_ecommerce_app/function/splitString.dart';
 import 'package:flutter_ecommerce_app/screens/reviewSreen.dart';
+import 'package:flutter_ecommerce_app/utils/Constants.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter_ecommerce_app/models/ProductsModel.dart';
 import 'package:flutter_ecommerce_app/utils/Urls.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'ProductsScreen.dart';
 import 'package:simple_html_css/simple_html_css.dart';
 
@@ -49,6 +51,8 @@ class ProductDetailScreen extends StatefulWidget {
 }
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
+//FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
   @override
   Widget build(BuildContext context) {
     _authBloc = BlocProvider.of<AuthBloc>(context);
@@ -163,6 +167,43 @@ class BottomNavBar extends StatelessWidget {
   final String konsumenId;
   final String productId;
   BottomNavBar({this.konsumenId, this.productId});
+
+  void sendNotifikasiDelete() async {
+    final body = jsonEncode({
+      "to": "/topics/topicsMentoring",
+      "topic": "topicsMentoring",
+      "notification": {
+        "title": "delete",
+        "body": "Success Delete Wish Product",
+        "sound": "default"
+      }
+    });
+    await http.post(BaseUrl,
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.authorizationHeader: keyMassaging
+        },
+        body: body);
+  }
+
+  void sendNotifikasiAdd(String stringBody) async {
+    final body = jsonEncode({
+      "to": "/topics/topicsMentoring",
+      "topic": "topicsMentoring",
+      "notification": {
+        "title": "tambah",
+        "body": stringBody,
+        "sound": "default"
+      }
+    });
+    await http.post(BaseUrl,
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.authorizationHeader: keyMassaging
+        },
+        body: body);
+  }
+
   @override
   Widget build(BuildContext context) {
     _favoriteBloc.add(ClearEventFavorite());
@@ -213,6 +254,7 @@ class BottomNavBar extends StatelessWidget {
               }
               if (state is FavoriteAddSuccess) {
                 if (state.addFavoriteModel.success == "true") {
+                  sendNotifikasiAdd("Success Tambah Wish Product");
                   _wishBloc.add(ListFavoriteEvent(konsumenId: konsumenId));
                   _favoriteBloc.add(CheckFavoriteEvent(
                       konsumenId: konsumenId, productId: productId));
@@ -224,6 +266,7 @@ class BottomNavBar extends StatelessWidget {
               }
               if (state is FavoriteDeleteSuccess) {
                 if (state.deleteFavoriteModel.success == "true") {
+                  sendNotifikasiDelete();
                   _wishBloc.add(ListFavoriteEvent(konsumenId: konsumenId));
                   _favoriteBloc.add(CheckFavoriteEvent(
                       konsumenId: konsumenId, productId: productId));
@@ -254,6 +297,7 @@ class BottomNavBar extends StatelessWidget {
             onPressed: () {
               _cartBloc.add(
                   AddCartEvent(konsumenId: konsumenId, productId: productId));
+              sendNotifikasiAdd("Success Tambah Cart Product");
               _cartBloc.add(ClearEventCart());
             },
             color: Colors.grey[300],

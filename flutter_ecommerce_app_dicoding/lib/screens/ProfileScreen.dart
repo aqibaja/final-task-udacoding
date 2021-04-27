@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_ecommerce_app/bloc/cart_bloc.dart';
 import 'package:flutter_ecommerce_app/bloc/kecamatan_bloc.dart';
 import 'package:flutter_ecommerce_app/bloc/kota_bloc.dart';
 import 'package:flutter_ecommerce_app/bloc/provinsi_bloc.dart';
 import 'package:flutter_ecommerce_app/bloc/auth_bloc.dart';
 import 'package:flutter_ecommerce_app/bloc/konsumen_bloc.dart';
+import 'package:flutter_ecommerce_app/bloc/wish_bloc.dart';
 import 'package:flutter_ecommerce_app/common_widget/CircularProgress.dart';
 import 'package:flutter_ecommerce_app/models/DetailKonsumenModel.dart';
 import 'package:flutter_ecommerce_app/models/KecamatanModel.dart';
@@ -43,6 +45,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String provinsiSave;
   String kotaSave;
   String kecamatanSave;
+  CartBloc _cartBloc;
+  WishBloc _wishBloc;
 
   TextEditingController _textEditUsernam = TextEditingController();
   TextEditingController _textEditFullName = TextEditingController();
@@ -110,6 +114,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _blocKota = BlocProvider.of<KotaBloc>(context);
     _blocKec = BlocProvider.of<KecamatanBloc>(context);
     _blocKonsumen = BlocProvider.of<KonsumenBloc>(context);
+    _cartBloc = BlocProvider.of<CartBloc>(context);
+    _wishBloc = BlocProvider.of<WishBloc>(context);
 
     return Scaffold(
         appBar: AppBar(

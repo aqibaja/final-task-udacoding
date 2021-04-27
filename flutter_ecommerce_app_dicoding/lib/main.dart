@@ -126,12 +126,12 @@ class _MyHomePageNewState extends State<MyHomePage> {
           if (state is SignInOut) {
             print("belum login");
             EasyLoading.dismiss();
-            return Center(
+            /* return Center(
               child: ElevatedButton(
                   onPressed: () => Navigator.push(
                       context, MaterialPageRoute(builder: (_) => AppSignIn())),
                   child: Text("LOGIN")),
-            );
+            ); */
             /*  Future.delayed(Duration(milliseconds: 700), () {
             Navigator.push(
                 context, MaterialPageRoute(builder: (_) => AppSignIn()));
@@ -140,7 +140,6 @@ class _MyHomePageNewState extends State<MyHomePage> {
           if (state is SignInSaved) {
             String konsumenId = state.idUSerSave;
             print("konsumenID = " + konsumenId);
-            print("id konsumen di cart tersimpan!!!");
             EasyLoading.dismiss();
           }
           return Scaffold(

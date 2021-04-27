@@ -45,6 +45,7 @@ class _EmptyShoppingCartScreenState extends State<EmptyShoppingCartScreen> {
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   getNotifikasiCart() {
+    _firebaseMessaging.requestNotificationPermissions();
     _firebaseMessaging.subscribeToTopic("topicsMentoring");
     _firebaseMessaging.configure(
         // ketika didalam aplikasi
@@ -69,6 +70,7 @@ class _EmptyShoppingCartScreenState extends State<EmptyShoppingCartScreen> {
         },
         //ketika app tertutup
         onLaunch: (Map<String, dynamic> message) async {},
+
         //ketika app berjalan di background
         onResume: (Map<String, dynamic> message) async {});
   }
